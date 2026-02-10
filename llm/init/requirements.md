@@ -28,15 +28,15 @@ alias age-plugin-yubikey='age-plugin-agent'
 
 # Implementation
 
-* Go executable called `age-plugin-agent`.
-* **Binary Name Detection**: The binary should check its own name (via `os.Args[0]`) on startup:
-	* If the binary name starts with `age-plugin-` (e.g., called via symlink as `age-plugin-yubikey`), extract the plugin name and automatically run in `forward` mode for that plugin.
-	* Otherwise, parse subcommands normally.
-* Subcommands:
-	* `intercept`: Spins up a shell with the specified plugins in the $PATH. Creates symlinks to `age-plugin-agent` named `age-plugin-<name>` for each specified plugin, allowing automatic detection via binary name.
-	* `forward <plugin-name>`: Connects to the server socket, performs the handshake protocol (sends plugin name, receives OK/ERROR), then forwards STDIN to the socket and forwards responses from the socket back to STDOUT.
-	* `server`: Spins up the server that listens on a Unix domain socket for plugin requests. For each connection, it performs the handshake protocol to determine which plugin to execute, searches `$PATH` for the corresponding `age-plugin-[name]` binary, spawns the plugin subprocess, and transparently proxies data between the socket and the plugin's stdin/stdout. Once the plugin binary exits, the server closes the connection.
-* Socket: the socket is simply a file. The server listens on that socket for incoming plugin requests. The client connects to that socket and sends the plugin request. The server then forwards the request to the appropriate plugin and sends the response back to the client. This is meant to be used by forwarding the file via SSH.
+* Go executable called `age-plugin-agent`. [req.wtb211]
+* **Binary Name Detection**: The binary should check its own name (via `os.Args[0]`) on startup: [req.csnye0]
+	* If the binary name starts with `age-plugin-` (e.g., called via symlink as `age-plugin-yubikey`), extract the plugin name and automatically run in `proxy` mode for that plugin. [req.tjn27i]
+	* Otherwise, parse subcommands normally. [req.bpo0ci]
+* Subcommands: [req.nc6prq]
+	* `intercept`: Spins up a shell with the specified plugins in the $PATH. Creates symlinks to `age-plugin-agent` named `age-plugin-<name>` for each specified plugin, allowing automatic detection via binary name. [req.02pjoj]
+	* `proxy <plugin-name>`: Connects to the server socket, performs the handshake protocol (sends plugin name, receives OK/ERROR), then forwards STDIN to the socket and forwards responses from the socket back to STDOUT. [req.erkwws]
+	* `server`: Spins up the server that listens on a Unix domain socket for plugin requests. For each connection, it performs the handshake protocol to determine which plugin to execute, searches `$PATH` for the corresponding `age-plugin-[name]` binary, spawns the plugin subprocess, and transparently proxies data between the socket and the plugin's stdin/stdout. Once the plugin binary exits, the server closes the connection. [req.lv5ejb]
+* Socket: the socket is simply a file. The server listens on that socket for incoming plugin requests. The client connects to that socket and sends the plugin request. The server then forwards the request to the appropriate plugin and sends the response back to the client. This is meant to be used by forwarding the file via SSH. [req.nytk77]
 
 ## Handshake Protocol
 
