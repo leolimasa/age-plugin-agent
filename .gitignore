@@ -1,0 +1,17 @@
+# Compiled binary
+age-plugin-agent
+
+# Test symlinks and scripts created during development/testing
+age-plugin-test
+age-plugin-mocktest
+
+# Nix build results
+result
+result-*
+
+# Go test cache and temp files
+*.test
+*.out
+
+# macOS
+.DS_Store
